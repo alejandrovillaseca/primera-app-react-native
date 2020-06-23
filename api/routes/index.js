@@ -4,6 +4,15 @@ var markInsert = require('../controller/marks.controller')
 
 
 /* POST. */
+
+router.get('/getCords', function (req, res, next) {
+  markInsert.getAllCords().then(obj => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(obj, null, 4));
+    
+  })
+
+});
 router.post('/insert', function (req, res, next) {
   const { latitude, longitude, name } = req.body
   markInsert.markInsert(latitude, longitude, name)

@@ -1,8 +1,9 @@
 import React from 'react';
 import MapView, { Marker } from "react-native-maps"
-import { Text, View, StyleSheet, Dimensions, Modal, Button, TouchableHighlight } from 'react-native';
-import { getAllCoords } from '../services/coords.service'
+import { Text, View, StyleSheet, Dimensions, Modal, Icon, Button, TouchableHighlight } from 'react-native';
+import { getAllCoords, deleteCord } from '../services/coords.service'
 import FormCords from './forms/FormCords'
+import * as Config from '../config.json'
 
 var _mapView = MapView;
 class Map extends React.Component {
@@ -15,30 +16,15 @@ class Map extends React.Component {
     }
 
     componentDidMount() {
-        let resp = getAllCoords().then(obj => {
-            this.setState({
-                dataSource: [
-                    {
-                        id: 1,
-                        name: "Calle 1",
-                        latitude: -33.453750,
-                        longitude: -70.598085,
-                    },
-                    {
-                        id: 2,
-                        name: "Calle 2",
-                        latitude: -33.450306,
-                        longitude: -70.622406,
-                    },
-                ]
-            })
-            console.log(this.state.dataSource[0].name);
-
-        })
-
-
+        this.refreshCords()
     }
-
+    refreshCords() {
+        getAllCoords().then(obj => {
+            this.setState({
+                dataSource: obj
+            })
+        })
+    }
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
     }
@@ -54,8 +40,8 @@ class Map extends React.Component {
                 <MapView
                     style={styles.mapStyle}
                     initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
+                        latitude: Config.InitialLatitude,
+                        longitude: Config.InitialLongitude,
                         latitudeDelta: 0.0032,
                         longitudeDelta: 0.0101,
                     }}
@@ -66,8 +52,8 @@ class Map extends React.Component {
                         return (<Marker
                             draggable
                             coordinate={{
-                                latitude: prop.latitude,
-                                longitude: prop.longitude,
+                                latitude: parseFloat(prop.latitude),
+                                longitude: parseFloat(prop.longitude),
                             }}
                             onDragEnd={(e) => alert(JSON.stringify(e.nativeEvent.coordinate))}
                             title={prop.name}
@@ -76,15 +62,38 @@ class Map extends React.Component {
                     })}
                 </MapView>
                 {this.state.dataSource.map((prop, key) => {
-                    return (<Button
-                        title={prop.name}
-                        onPress={() => _mapView.animateToCoordinate({
-                            latitude: prop.latitude,
-                            longitude: prop.longitude,
-                            latitudeDelta: 0.0032,
-                            longitudeDelta: 0.0101,
-                        }, 1000)}
-                    />)
+                    return (
+                        <View>
+                            <Button
+                                type="outline"
+                                title={prop.name}
+                                onPress={() => _mapView.animateToCoordinate({
+                                    latitude: parseFloat(prop.latitude),
+                                    longitude: parseFloat(prop.longitude),
+                                    latitudeDelta: 0.0032,
+                                    longitudeDelta: 0.0101,
+                                }, 1000)}
+                            />
+                            <Button
+                                type="clear"
+                                title="Eliminar"
+                                icon={
+                                    <Icon
+                                        name="arrow-right"
+                                        size={15}
+                                        color="white"
+                                    />
+                                }
+                                onPress={() => {
+                                    deleteCord(prop._id).then(obj => {
+                                        if (obj)
+                                            this.refreshCords()
+                                    })
+
+                                }}
+                            />
+                        </View>
+                    )
                 })}
 
 
@@ -93,14 +102,12 @@ class Map extends React.Component {
                     transparent={true}
                     visible={modalVisible}
                     onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
+                        this.refreshCords()
                     }}
                 >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <FormCords />
-
-                            <Text style={styles.modalText}>Hello World!</Text>
+                            <FormCords closeModal={this.closeModal} />
 
                             <TouchableHighlight
                                 style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
@@ -108,7 +115,7 @@ class Map extends React.Component {
                                     this.setModalVisible(!modalVisible);
                                 }}
                             >
-                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                <Text style={styles.textStyle}>Cerrar</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -120,15 +127,24 @@ class Map extends React.Component {
                         this.setModalVisible(true);
                     }}
                 >
-                    <Text style={styles.textStyle}>Show Modal</Text>
+                    <Text style={styles.textStyle}>Crear Coordenada</Text>
                 </TouchableHighlight>
 
             </View>
         );
     }
+
+    closeModal() {
+        this.setState({ modalVisible: visible });
+    }
 }
 
 const styles = StyleSheet.create({
+    button: {
+        backgroundColor: 'green',
+        width: '40%',
+        height: 40
+    },
     header: {
         flex: 1,
         flexDirection: 'column',
@@ -169,7 +185,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     openButton: {
-        backgroundColor: "#F194FF",
+        backgroundColor: "green",
         borderRadius: 20,
         padding: 10,
         elevation: 2

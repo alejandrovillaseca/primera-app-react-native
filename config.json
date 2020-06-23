@@ -1,0 +1,7 @@
+{
+    "API": "http://192.168.0.20:3000",
+    "InitialLatitude": -33.436921,
+    "InitialLongitude" : -70.634388,
+    "latitudeDelta": 0.0032,
+    "longitudeDelta": 0.0101
+}

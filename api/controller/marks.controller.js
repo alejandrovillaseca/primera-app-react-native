@@ -2,6 +2,18 @@ const collection = "marks"
 const dbUtils = require('../utils/db.utils')
 var ObjectId = require('mongodb').ObjectID;
 
+exports.getAllCords = () => {
+    return new Promise((resolve, reject) => {
+        dbUtils.connect().then(db => {
+            db.collection(collection).find().toArray().then(obj => {
+                resolve(obj)
+            }).catch(err => {
+                console.log(err)
+                reject("Error")
+            })
+        })
+    })
+}
 exports.markInsert = (latitude, longitude, name) => {
     var markToInsert = {
         latitude: latitude,
