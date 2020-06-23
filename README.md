@@ -8,14 +8,14 @@ Front
 - react-native-maps (MapView para GMaps)
 
 Back
--NodeJs (JS)
+- NodeJs (JS)
 
 DB
 MongoDB
 
-#TODO
--Alineación de botones de las coordenadas listadas.
--Estilos de Botones
--Posición de Boton "Crear Coordenada" superior derecha como ícono
--Cerrar modal una vez creada la coordenada.
+# TODO
+- Alineación de botones de las coordenadas listadas.
+- Estilos de Botones
+- Posición de Boton "Crear Coordenada" superior derecha como ícono
+- Cerrar modal una vez creada la coordenada.
 
