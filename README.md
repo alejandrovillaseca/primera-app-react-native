@@ -3,9 +3,9 @@
 App para guardar tus lugares favoritos. Desarrollado con GMaps y React-Native. Información técnica:
 
 Front
--Expo CLI
--React Native (Testeada con Android)
--react-native-maps (MapView para GMaps)
+- Expo CLI
+- React Native (Testeada con Android)
+- react-native-maps (MapView para GMaps)
 
 Back
 -NodeJs (JS)
