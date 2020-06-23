@@ -11,7 +11,7 @@ Back
 - NodeJs (JS)
 
 DB
-MongoDB
+- MongoDB
 
 # TODO
 - Alineación de botones de las coordenadas listadas.
